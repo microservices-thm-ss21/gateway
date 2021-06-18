@@ -1,0 +1,26 @@
+openapi: 3.0.3
+info:
+  title: API Specification for Issue-Service
+  description: API Specification for Gateway-Service
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080/mydirtyproject'
+paths:
+  /projects:
+    get:
+      description: |
+        Get all Projects for this User
+      responses:
+        '200':
+          description: List of available Projects
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                type: string
+

@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+
+  gateway:
+    image: gateway
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+    - 8080:8080
+    volumes:
+      - /data/gateway
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
