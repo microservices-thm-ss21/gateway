@@ -26,7 +26,7 @@ class GatewayController(@Autowired val gatewayService: GatewayService) {
     fun getAvailableProjects(): Flux<Project> {
         //val userId: UUID = gatewayService.validateUserToken("TODO")
 
-        val client = WebClient.create("http://http:project-service:8082")
+        val client = WebClient.create("http://project-service:8082")
         val uriSpec: WebClient.UriSpec<WebClient.RequestBodySpec> = client.post()
         val headerSpec: WebClient.RequestHeadersSpec<*> = uriSpec.uri("api/projects/") //uriSpec.uri("api/projects/user/$userId")
         val responseSpec = headerSpec.header(
