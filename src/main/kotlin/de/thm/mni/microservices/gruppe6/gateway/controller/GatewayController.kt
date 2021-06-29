@@ -16,13 +16,13 @@ import reactor.core.publisher.Mono
 import java.nio.charset.StandardCharsets
 import java.util.*
 
-@Controller
-@RequestMapping("myDirtyProject")
+@RestController
+@RequestMapping("/mydirtyproject")
 @CrossOrigin
 class GatewayController(@Autowired val gatewayService: GatewayService) {
 
 
-    @GetMapping("projects")
+    @GetMapping("/projects")
     fun getAvailableProjects(): Flux<Project> {
         //val userId: UUID = gatewayService.validateUserToken("TODO")
 
