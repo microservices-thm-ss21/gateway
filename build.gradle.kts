@@ -32,6 +32,7 @@ buildscript {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-activemq")
+    implementation("io.micrometer:micrometer-registry-influx:1.7.1")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
     //implementation("org.springframework.boot:spring-boot-starter-security")
