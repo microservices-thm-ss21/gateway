@@ -1,18 +1,52 @@
 package de.thm.mni.microservices.gruppe6.gateway.service
 
 
+import de.thm.mni.microservices.gruppe6.gateway.model.Project
 import de.thm.mni.microservices.gruppe6.lib.event.*
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.client.ClientResponse
+import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
+import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.util.*
 
 @Component
-class GatewayService(@Autowired val sender: JmsTemplate) {
+class GatewayService {
+
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
+    // Maybe one GatewayService for each Service?
+
+    fun forwardRequest(): Flux<Project> {
+        val client = WebClient.create("http://project-service:8082")
+        val uriSpec: WebClient.UriSpec<WebClient.RequestBodySpec> = client.post()
+        val headerSpec: WebClient.RequestHeadersSpec<*> = uriSpec.uri("api/projects/") //uriSpec.uri("api/projects/user/$userId")
+        val responseSpec = headerSpec.header(
+            HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
+        )
+            .accept(MediaType.APPLICATION_JSON)
+            .acceptCharset(StandardCharsets.UTF_8)
+
+        return responseSpec.exchangeToFlux { response: ClientResponse ->
+            if (response.statusCode() == HttpStatus.OK) {
+                logger.debug("Everything ok")
+                response.bodyToFlux(Project::class.java)
+            } else {
+                logger.debug("Result Empty")
+                Flux.empty()
+            }
+        }
+    }
+
 /*
     fun validateUserToken(token: String): UUID = TODO()
 

@@ -3,6 +3,7 @@ package de.thm.mni.microservices.gruppe6.gateway.controller
 import de.thm.mni.microservices.gruppe6.gateway.model.Project
 import de.thm.mni.microservices.gruppe6.gateway.service.GatewayService
 import de.thm.mni.microservices.gruppe6.lib.exception.ServiceException
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -21,28 +22,10 @@ import java.util.*
 @CrossOrigin
 class GatewayController(@Autowired val gatewayService: GatewayService) {
 
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     @GetMapping("/projects")
-    fun getAvailableProjects(): Flux<Project> {
-        //val userId: UUID = gatewayService.validateUserToken("TODO")
-
-        val client = WebClient.create("http://project-service:8082")
-        val uriSpec: WebClient.UriSpec<WebClient.RequestBodySpec> = client.post()
-        val headerSpec: WebClient.RequestHeadersSpec<*> = uriSpec.uri("api/projects/") //uriSpec.uri("api/projects/user/$userId")
-        val responseSpec = headerSpec.header(
-            HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
-        )
-            .accept(MediaType.APPLICATION_JSON)
-            .acceptCharset(StandardCharsets.UTF_8)
-
-        return responseSpec.exchangeToFlux { response: ClientResponse ->
-            if (response.statusCode() == HttpStatus.OK) {
-                response.bodyToFlux(Project::class.java)
-            } else {
-                Flux.empty()
-            }
-        }
-    }
+    fun getAvailableProjects(): Flux<Project> = gatewayService.forwardRequest()
 /*
     /**
      * Returns all stored projects
