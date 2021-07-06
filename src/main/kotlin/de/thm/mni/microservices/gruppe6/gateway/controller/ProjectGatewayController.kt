@@ -22,11 +22,11 @@ class ProjectGatewayController(@Autowired val gatewayService: GatewayService) {
                     "${ProjectEndpoint.BASE.url}/${ProjectEndpoint.PROJECTS_BY_USER.url}/$userId",
                     Project::class.java)
 
-    @GetMapping("/user/project/{projectId}")
-    fun getProjectByID(@PathVariable projectId: UUID): Mono<Project> =
-            gatewayService.forwardGetRequestMono(ProjectEndpoint.SERVICE.url,
-                    "${ProjectEndpoint.BASE.url}/$projectId",
-                    Project::class.java)
+//    @GetMapping("/user/project/{projectId}")
+//    fun getProjectByID(@PathVariable projectId: UUID): Mono<Project> =
+//            gatewayService.forwardGetRequestMono(ProjectEndpoint.SERVICE.url,
+//                    "${ProjectEndpoint.BASE.url}/$projectId",
+//                    Project::class.java)
 
     @GetMapping("/project/{projectId}/member")
     fun getMembersOfProject(@PathVariable projectId: UUID): Flux<Member> =
