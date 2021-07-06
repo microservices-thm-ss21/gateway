@@ -10,12 +10,6 @@ import org.springframework.cloud.gateway.route.builder.routes
 
 @SpringBootApplication
 class GatewayApplication {
-    fun main(args: Array<String>) {
-        runApplication<GatewayApplication>(*args)
-    }
-
-
-
     @Bean
     fun customRouteLocator(builder: RouteLocatorBuilder): RouteLocator {
         return builder.routes {
@@ -25,6 +19,10 @@ class GatewayApplication {
             }
         }
     }
+}
+
+fun main(args: Array<String>) {
+    runApplication<GatewayApplication>(*args)
 }
 
 

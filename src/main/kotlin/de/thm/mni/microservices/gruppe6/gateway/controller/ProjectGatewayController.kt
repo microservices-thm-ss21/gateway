@@ -16,11 +16,12 @@ class ProjectGatewayController(@Autowired val gatewayService: GatewayService) {
 
     private val userId = "8d8fa2d7-b999-4e07-9739-c563ee9fb12b"
 
-    @GetMapping("/user")
-    fun getAvailableProjects(): Flux<Project> =
-            gatewayService.forwardGetRequestFlux(ProjectEndpoint.SERVICE.url,
-                    "${ProjectEndpoint.BASE.url}/${ProjectEndpoint.PROJECTS_BY_USER.url}/$userId",
-                    Project::class.java)
+//    @GetMapping("/user")
+//    fun getAvailableProjects(): Flux<Project> =
+//            gatewayService.forwardGetRequestFlux(ProjectEndpoint.SERVICE.url,
+//                    "${ProjectEndpoint.BASE.url}/${ProjectEndpoint.PROJECTS_BY_USER.url}/$userId",
+//                    Project::class.java)
+//
 
 //    @GetMapping("/user/project/{projectId}")
 //    fun getProjectByID(@PathVariable projectId: UUID): Mono<Project> =
@@ -28,10 +29,11 @@ class ProjectGatewayController(@Autowired val gatewayService: GatewayService) {
 //                    "${ProjectEndpoint.BASE.url}/$projectId",
 //                    Project::class.java)
 
-    @GetMapping("/project/{projectId}/member")
-    fun getMembersOfProject(@PathVariable projectId: UUID): Flux<Member> =
-            gatewayService.forwardGetRequestFlux(ProjectEndpoint.SERVICE.url,
-                    "${ProjectEndpoint.BASE.url}/$projectId/members",
-                    Member::class.java)
+//
+//    @GetMapping("/project/{projectId}/member")
+//    fun getMembersOfProject(@PathVariable projectId: UUID): Flux<Member> =
+//            gatewayService.forwardGetRequestFlux(ProjectEndpoint.SERVICE.url,
+//                    "${ProjectEndpoint.BASE.url}/$projectId/members",
+//                    Member::class.java)
 
 }
