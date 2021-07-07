@@ -4,9 +4,9 @@ info:
   description: API Specification for Gateway-Service
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8069/mydirtyproject'
+  - url: 'http://localhost:8069'
 paths:
-  /projects:
+  /api/projects:
     get:
       description: |
         Get all Projects for this User
