@@ -1,8 +1,9 @@
 package de.thm.mni.microservices.gruppe6.gateway.controller
 
 import de.thm.mni.microservices.gruppe6.gateway.endpoints.ProjectEndpoint
-import de.thm.mni.microservices.gruppe6.gateway.model.*
 import de.thm.mni.microservices.gruppe6.gateway.service.GatewayService
+import de.thm.mni.microservices.gruppe6.lib.classes.projectService.Member
+import de.thm.mni.microservices.gruppe6.lib.classes.projectService.Project
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
