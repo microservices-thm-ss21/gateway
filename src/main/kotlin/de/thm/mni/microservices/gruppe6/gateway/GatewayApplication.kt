@@ -3,7 +3,7 @@ package de.thm.mni.microservices.gruppe6.gateway
 import de.thm.mni.microservices.gruppe6.gateway.endpoints.IssueEndpoint
 import de.thm.mni.microservices.gruppe6.gateway.endpoints.ProjectEndpoint
 import de.thm.mni.microservices.gruppe6.gateway.endpoints.UserEndpoint
-import de.thm.mni.microservices.gruppe6.gateway.filter.ProjectFilter
+import de.thm.mni.microservices.gruppe6.gateway.filter.UserIsMemberFilter
 import de.thm.mni.microservices.gruppe6.gateway.model.User
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -34,7 +34,7 @@ class GatewayApplication {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Bean
-    fun customRouteLocator(builder: RouteLocatorBuilder, projectFilter: ProjectFilter): RouteLocator {
+    fun customRouteLocator(builder: RouteLocatorBuilder, userIsMemberFilter: UserIsMemberFilter): RouteLocator {
         return builder.routes {
             // project service
             route {
@@ -47,7 +47,7 @@ class GatewayApplication {
                     "/${ProjectEndpoint.BASE.url}/{projectId}/members"
                 )
                     .filters { f ->
-                        f.filter(projectFilter.apply(projectFilter.customConfig(user)))
+                        f.filter(userIsMemberFilter.apply(userIsMemberFilter.customConfig(user)))
                     }
                 uri(ProjectEndpoint.SERVICE.url)
             }
