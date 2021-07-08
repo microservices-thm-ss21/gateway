@@ -1,6 +1,7 @@
 package de.thm.mni.microservices.gruppe6.gateway.filter
 
 import de.thm.mni.microservices.gruppe6.gateway.endpoints.ProjectEndpoint
+import de.thm.mni.microservices.gruppe6.gateway.request.Requester
 import de.thm.mni.microservices.gruppe6.lib.classes.userService.User
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

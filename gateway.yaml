@@ -23,6 +23,31 @@ paths:
             application/json:
               schema:
                 type: string
+    post:
+      description: |
+        Create a new Project
+      requestBody:
+        description: projectDTO
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectDTO'
+      responses:
+        '201':
+          description: Created Project
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '409':
+          description: Project creator does not exist
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                type: string
 
   /api/projects/user:
     get:
@@ -54,3 +79,51 @@ paths:
             type: string
             example: 'e86c57cb-d703-4f39-9632-3782cb5500e8'
 
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        creatorId:
+          type: string
+          format: uuid
+        createTime:
+          type: string
+          format: date-time
+
+    ArrayOfProjects:
+      type: array
+      items:
+        $ref: '#/components/schemas/Project'
+
+    ProjectDTO:
+      type: object
+      required:
+        - name
+        - members
+      properties:
+        name:
+          type: string
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberDTO'
+
+    MemberDTO:
+      type: object
+      required:
+        - userId
+        - projectRole
+      properties:
+        userId:
+          type: string
+          format: uuid
+          example: "8d8fa2d7-b999-4e07-9739-c563ee9fb12b"
+        projectRole:
+          type: string
+          example: "boss"

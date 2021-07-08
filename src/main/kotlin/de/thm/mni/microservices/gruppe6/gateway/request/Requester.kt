@@ -1,4 +1,4 @@
-package de.thm.mni.microservices.gruppe6.gateway.filter
+package de.thm.mni.microservices.gruppe6.gateway.request
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders

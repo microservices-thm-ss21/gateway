@@ -3,8 +3,10 @@ package de.thm.mni.microservices.gruppe6.gateway
 import de.thm.mni.microservices.gruppe6.gateway.endpoints.IssueEndpoint
 import de.thm.mni.microservices.gruppe6.gateway.endpoints.ProjectEndpoint
 import de.thm.mni.microservices.gruppe6.gateway.endpoints.UserEndpoint
-import de.thm.mni.microservices.gruppe6.lib.classes.userService.User
 import de.thm.mni.microservices.gruppe6.gateway.filter.UserIsMemberFilter
+import de.thm.mni.microservices.gruppe6.gateway.message.GatewayProjectDTO
+import de.thm.mni.microservices.gruppe6.lib.classes.projectService.ProjectDTO
+import de.thm.mni.microservices.gruppe6.lib.classes.userService.User
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -13,6 +15,9 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder
 import org.springframework.cloud.gateway.route.builder.filters
 import org.springframework.cloud.gateway.route.builder.routes
 import org.springframework.context.annotation.Bean
+import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
+import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -21,15 +26,15 @@ import java.util.*
 @SpringBootApplication
 class GatewayApplication {
     val user: User = User(
-        UUID.fromString("a443ffd0-f7a8-44f6-8ad3-87acd1e91042"),
-        "Peter_Zwegat",
-        "Peter",
-        "Zwegat",
-        "peter.zwegat@mni.thm.de",
-        LocalDate.now(),
-        LocalDateTime.now(),
-        "normal",
-        null
+            UUID.fromString("a443ffd0-f7a8-44f6-8ad3-87acd1e91042"),
+            "Peter_Zwegat",
+            "Peter",
+            "Zwegat",
+            "peter.zwegat@mni.thm.de",
+            LocalDate.now(),
+            LocalDateTime.now(),
+            "normal",
+            null
     )
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -44,11 +49,22 @@ class GatewayApplication {
             }
             route {
                 path(
-                    "/${ProjectEndpoint.BASE.url}/{projectId}/members"
+                        "/${ProjectEndpoint.BASE.url}/{projectId}/members"
                 )
-                    .filters { f ->
-                        f.filter(userIsMemberFilter.apply(userIsMemberFilter.customConfig(user)))
-                    }
+                        .filters { f ->
+                            f.filter(userIsMemberFilter.apply(userIsMemberFilter.customConfig(user)))
+                        }
+                uri(ProjectEndpoint.SERVICE.url)
+            }
+            route {
+                path(
+                        "/${ProjectEndpoint.BASE.url}"
+                )
+                        .filters { f ->
+                            f.modifyRequestBody(GatewayProjectDTO::class.java, ProjectDTO::class.java,
+                                    MediaType.APPLICATION_JSON_VALUE)
+                            { _, projectDTO -> Mono.just(ProjectDTO(projectDTO.name, user.id, projectDTO.members)) }
+                        }
                 uri(ProjectEndpoint.SERVICE.url)
             }
             // issue service
