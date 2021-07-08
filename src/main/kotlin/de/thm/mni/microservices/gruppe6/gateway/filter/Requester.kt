@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono
 import java.nio.charset.StandardCharsets
 
 @Component
-class Filter {
+class Requester {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun getResponseSpec(baseURI: String, routeURI: String): WebClient.RequestHeadersSpec<*> {

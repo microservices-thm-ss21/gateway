@@ -1,7 +1,10 @@
 package de.thm.mni.microservices.gruppe6.gateway.filter
 
+import de.thm.mni.microservices.gruppe6.gateway.endpoints.ProjectEndpoint
+import de.thm.mni.microservices.gruppe6.gateway.model.Member
 import de.thm.mni.microservices.gruppe6.gateway.model.User
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cloud.gateway.filter.GatewayFilter
 import org.springframework.cloud.gateway.filter.GatewayFilterChain
 import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory
@@ -11,15 +14,17 @@ import org.springframework.stereotype.Component
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
+import java.util.*
+import javax.print.attribute.standard.ReferenceUriSchemesSupported.HTTP
 
 @Component
-class ProjectFilter : GatewayFilterFactory<ProjectFilter.Config> {
-    class Config(var name: String = "DemoGatewayFilter", var user: User)
+class ProjectFilter(@Autowired val requester: Requester) : GatewayFilterFactory<ProjectFilter.Config> {
 
+    class Config(var name: String = "DemoGatewayFilter", var user: User)
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     companion object {
-        val UUID : Regex = Regex("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}")
+        val UUIDRegex : Regex = Regex("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}")
     }
 
 
@@ -38,16 +43,20 @@ class ProjectFilter : GatewayFilterFactory<ProjectFilter.Config> {
                     val uriVariables = ServerWebExchangeUtils.getUriTemplateVariables(exchange)
                     val projectId = uriVariables["projectId"]
 
-                    if(!projectId!!.matches(UUID)){
+                    if(!projectId!!.matches(UUIDRegex)){
                         throw ResponseStatusException(HttpStatus.BAD_REQUEST)
                     }
 
                     logger.debug("ProjectId: $projectId")
                     logger.debug("UserId: ${config.user.id}")
-
-
-
-                }.then()
+                    UUID.fromString(projectId)
+                }.flatMap { projectId ->
+                    requester.forwardGetRequestFlux(ProjectEndpoint.SERVICE.url, ProjectEndpoint.BASE.url + "/$projectId/members", Member::class.java)
+                        .filter { it.id == config.user.id }
+                        .collectList()
+                        .thenReturn(projectId)
+                }.switchIfEmpty(Mono.error(ResponseStatusException(HttpStatus.BAD_REQUEST)))
+                .then()
         }
     }
 }
