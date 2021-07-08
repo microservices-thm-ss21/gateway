@@ -4,7 +4,7 @@ import de.thm.mni.microservices.gruppe6.gateway.endpoints.IssueEndpoint
 import de.thm.mni.microservices.gruppe6.gateway.endpoints.ProjectEndpoint
 import de.thm.mni.microservices.gruppe6.gateway.endpoints.UserEndpoint
 import de.thm.mni.microservices.gruppe6.gateway.filter.ProjectFilter
-import de.thm.mni.microservices.gruppe6.gateway.model.User
+import de.thm.mni.microservices.gruppe6.lib.classes.userService.User
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

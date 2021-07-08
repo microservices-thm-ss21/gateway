@@ -1,8 +1,8 @@
 package de.thm.mni.microservices.gruppe6.gateway.filter
 
 import de.thm.mni.microservices.gruppe6.gateway.endpoints.ProjectEndpoint
-import de.thm.mni.microservices.gruppe6.gateway.model.Member
-import de.thm.mni.microservices.gruppe6.gateway.model.User
+import de.thm.mni.microservices.gruppe6.lib.classes.projectService.Member
+import de.thm.mni.microservices.gruppe6.lib.classes.userService.User
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cloud.gateway.filter.GatewayFilter
