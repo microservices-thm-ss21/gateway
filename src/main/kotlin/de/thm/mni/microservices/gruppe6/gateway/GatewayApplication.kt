@@ -43,9 +43,12 @@ class GatewayApplication {
                 uri(ProjectEndpoint.SERVICE.url)
             }
             route {
-                path("/${ProjectEndpoint.BASE.url}/*/members").filters { f ->
-                    f.filter(projectFilter.apply(projectFilter.newConfig()))
-                }
+                path(
+                    "/${ProjectEndpoint.BASE.url}/{projectId}/members"
+                )
+                    .filters { f ->
+                        f.filter(projectFilter.apply(projectFilter.customConfig(user)))
+                    }
                 uri(ProjectEndpoint.SERVICE.url)
             }
             // issue service
