@@ -7,6 +7,7 @@ plugins {
     kotlin("plugin.spring") version "1.4.32"
 }
 
+
 group = "de.thm.mni.microservices.gruppe6"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
@@ -30,7 +31,14 @@ buildscript {
     }
 }
 
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2020.0.3")
+    }
+}
+
 dependencies {
+    implementation("org.springframework.cloud:spring-cloud-starter-gateway")
     implementation("org.springframework.boot:spring-boot-starter-activemq")
     implementation("io.micrometer:micrometer-registry-influx:1.7.1")
     implementation("org.springframework.boot:spring-boot-starter-actuator")

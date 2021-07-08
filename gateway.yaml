@@ -4,9 +4,9 @@ info:
   description: API Specification for Gateway-Service
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8069/mydirtyproject'
+  - url: 'http://localhost:8069'
 paths:
-  /projects:
+  /api/projects:
     get:
       description: |
         Get all Projects for this User
@@ -23,4 +23,34 @@ paths:
             application/json:
               schema:
                 type: string
+
+  /api/projects/user:
+    get:
+      description: Get project of the given id
+      responses:
+        '200':
+          description: Project
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /api/projects/{uuid}/members:
+    get:
+      description: Get project of the given id
+      responses:
+        '200':
+          description: Project
+          content:
+            application/json:
+              schema:
+                type: string
+      parameters:
+        - name: uuid
+          in: path
+          description: ID of project
+          required: true
+          schema:
+            type: string
+            example: 'e86c57cb-d703-4f39-9632-3782cb5500e8'
 

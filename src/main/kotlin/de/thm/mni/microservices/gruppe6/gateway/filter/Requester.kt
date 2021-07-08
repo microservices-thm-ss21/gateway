@@ -1,5 +1,4 @@
-package de.thm.mni.microservices.gruppe6.gateway.service
-
+package de.thm.mni.microservices.gruppe6.gateway.filter
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
@@ -13,20 +12,18 @@ import reactor.core.publisher.Mono
 import java.nio.charset.StandardCharsets
 
 @Component
-class GatewayService {
-
+class Requester {
     private val logger = LoggerFactory.getLogger(this::class.java)
-
 
     fun getResponseSpec(baseURI: String, routeURI: String): WebClient.RequestHeadersSpec<*> {
         val client = WebClient.create(baseURI)
         val uriSpec: WebClient.RequestHeadersUriSpec<*> = client.get()
         val headerSpec: WebClient.RequestHeadersSpec<*> = uriSpec.uri(routeURI) //uriSpec.uri("api/projects/user/$userId")
         return headerSpec.header(
-                HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
+            HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
         )
-                .accept(MediaType.APPLICATION_JSON)
-                .acceptCharset(StandardCharsets.UTF_8)
+            .accept(MediaType.APPLICATION_JSON)
+            .acceptCharset(StandardCharsets.UTF_8)
     }
 
     fun <T> forwardGetRequestFlux(baseURI: String, routeURI: String, returnClass: Class<T>): Flux<T> {
