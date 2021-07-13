@@ -2,8 +2,9 @@ spring:
   cloud:
     gateway:
       globalcors:
+        add-to-simple-url-handler-mapping: true
         corsConfigurations:
-          '[/**]':
+          '[**/**]':
             allowedOrigins: "http://localhost:8069"
             allowedMethods:
               - GET

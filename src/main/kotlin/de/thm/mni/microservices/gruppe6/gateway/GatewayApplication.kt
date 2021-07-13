@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.server.ServerHttpRequest
+import org.springframework.web.bind.annotation.CrossOrigin
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -54,7 +55,7 @@ class GatewayApplication {
                     "/${ProjectEndpoint.BASE.url}/users/**"
                 )
                 predicate { exchange ->
-                    logger.debug("predicate get routes of projectService")
+                    logger.debug("predicate get routes of projectService: ${exchange.request.method == HttpMethod.GET}")
                     exchange.request.method == HttpMethod.GET
                 }
                 uri(ProjectEndpoint.SERVICE.url)
@@ -64,17 +65,19 @@ class GatewayApplication {
                 // deleteProject, updateProject
                 path("/${ProjectEndpoint.BASE.url}/{projectId}")
                 predicate { exchange ->
-                    logger.debug("predicate delete and update routes of projectService ${exchange.request.method == HttpMethod.PUT || exchange.request.method == HttpMethod.DELETE}")
+                    logger.debug(exchange.request.method.toString())
+                    logger.debug("predicate delete and update routes of projectService: ${exchange.request.method == HttpMethod.PUT || exchange.request.method == HttpMethod.DELETE}")
                     exchange.request.method == HttpMethod.PUT || exchange.request.method == HttpMethod.DELETE
-                }
-                filters {
-                    GatewayFilter { exchange, chain ->
+                }.filters { f ->
+                    logger.debug("outer delete filter")
+                    f.filter { exchange, chain ->
                         logger.debug("TEST")
                         val modifiedRequest = exchange.request
                             .mutate().path("${exchange.request.path}/users/${user.id}").build()
                         chain.filter(exchange.mutate().request(modifiedRequest).build())
                     }
                 }
+
                 uri(ProjectEndpoint.SERVICE.url)
             }
 
