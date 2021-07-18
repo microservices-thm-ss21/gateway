@@ -39,13 +39,10 @@ dependencyManagement {
 
 dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-gateway")
-    implementation("org.springframework.boot:spring-boot-starter-activemq")
     implementation("io.micrometer:micrometer-registry-influx:1.7.1")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
-    //implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("de.codecentric:spring-boot-admin-starter-client")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("de.thm.mni.microservices.gruppe6:service-lib:0.0.1-SNAPSHOT")

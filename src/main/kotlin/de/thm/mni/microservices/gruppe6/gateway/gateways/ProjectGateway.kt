@@ -28,6 +28,7 @@ class ProjectGateway {
     val user: User = User(
         UUID.fromString("a443ffd0-f7a8-44f6-8ad3-87acd1e91042"),
         "Peter_Zwegat",
+        "password",
         "Peter",
         "Zwegat",
         "peter.zwegat@mni.thm.de",
