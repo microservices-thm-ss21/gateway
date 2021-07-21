@@ -3,6 +3,7 @@ package de.thm.mni.microservices.gruppe6.gateway
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 import org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.web.filter.HiddenHttpMethodFilter
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse
 
 
 @SpringBootApplication(exclude = [DataSourceAutoConfiguration::class, R2dbcAutoConfiguration::class])
+@ConfigurationPropertiesScan("de.thm.mni.microservices.gruppe6.gateway.security")
 class GatewayApplication {
 
 
