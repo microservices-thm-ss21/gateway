@@ -6,7 +6,6 @@ import de.thm.mni.microservices.gruppe6.gateway.message.GatewayProjectDTO
 import de.thm.mni.microservices.gruppe6.lib.classes.projectService.ProjectDTO
 import de.thm.mni.microservices.gruppe6.lib.classes.userService.User
 import org.slf4j.LoggerFactory
-import org.springframework.cloud.gateway.filter.GatewayFilter
 import org.springframework.cloud.gateway.route.RouteLocator
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder
 import org.springframework.cloud.gateway.route.builder.filters
@@ -60,14 +59,15 @@ class ProjectGateway {
                         logger.debug("http: ${exchange.request.method} | predicate delete and update routes of projectService: ${exchange.request.method == HttpMethod.PUT || exchange.request.method == HttpMethod.DELETE}")
                         exchange.request.method == HttpMethod.PUT || exchange.request.method == HttpMethod.DELETE
                     }
-                filters {
-                    GatewayFilter { exchange, chain ->
-                        val modifiedRequest = exchange.request
-                            .mutate().path("${exchange.request.path}/users/${user.id}").build()
-                        chain.filter(exchange.mutate().request(modifiedRequest).build())
-
+                    .filters { f ->
+                        f.filter { exchange, chain ->
+                            val modifiedRequest = exchange.request
+                                    .mutate().path("${exchange.request.path}/users/${user.id}").build()
+                            logger.debug("new path: ${modifiedRequest.path} ")
+                            logger.debug("${exchange.request.path}")
+                            chain.filter(exchange.mutate().request(modifiedRequest).build())
+                        }
                     }
-                }
                 uri(ProjectEndpoint.SERVICE.url)
             }
             route {
@@ -89,15 +89,14 @@ class ProjectGateway {
             }
 
             //@toDo~~~~~~~~~~~~ Not tested ~~~~~~~~~~~~~
-
-            route {
-                path("/${ProjectEndpoint.BASE.url}/{projectId}/member")
-                uri(ProjectEndpoint.SERVICE.url)
-            }
+            
             route {
                 path(
                     "/${ProjectEndpoint.BASE.url}/{projectId}/members"
-                )
+                ).and()
+                    .predicate { exchange ->
+                        exchange.request.method == HttpMethod.GET
+                    }
                     .filters { f ->
                         f.filter(userIsMemberFilter.apply(userIsMemberFilter.customConfig(user)))
                     }
