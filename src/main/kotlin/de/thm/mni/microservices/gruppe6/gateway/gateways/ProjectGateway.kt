@@ -41,11 +41,12 @@ class ProjectGateway {
     fun projectRouteLocator(builder: RouteLocatorBuilder, userIsMemberFilter: UserIsMemberFilter): RouteLocator {
         return builder.routes {
             route {
-                // getAllProjects, getProject, getAllProjectsOfUser
+                // getAllProjects, getProject, getAllProjectsOfUser, getMembers
                 path(
                     "/${ProjectEndpoint.BASE.url}",
                     "/${ProjectEndpoint.BASE.url}/*",
-                    "/${ProjectEndpoint.BASE.url}/users/**"
+                    "/${ProjectEndpoint.BASE.url}/user/*",
+                    "/${ProjectEndpoint.BASE.url}/*/members"
                 ).and().predicate { exchange ->
                     logger.debug("http: ${exchange.request.method} | predicate get routes of projectService: ${exchange.request.method == HttpMethod.GET}")
                     exchange.request.method == HttpMethod.GET
@@ -53,8 +54,10 @@ class ProjectGateway {
                 uri(ProjectEndpoint.SERVICE.url)
             }
             route {
-                // deleteProject, updateProject
-                path("/${ProjectEndpoint.BASE.url}/{projectId}").and()
+                // deleteProject, updateProject, deleteMembers, updateMembers
+                path(
+                        "/${ProjectEndpoint.BASE.url}/{projectId}/*"
+                ).and()
                     .predicate { exchange ->
                         logger.debug("http: ${exchange.request.method} | predicate delete and update routes of projectService: ${exchange.request.method == HttpMethod.PUT || exchange.request.method == HttpMethod.DELETE}")
                         exchange.request.method == HttpMethod.PUT || exchange.request.method == HttpMethod.DELETE
@@ -62,7 +65,7 @@ class ProjectGateway {
                     .filters { f ->
                         f.filter { exchange, chain ->
                             val modifiedRequest = exchange.request
-                                    .mutate().path("${exchange.request.path}/users/${user.id}").build()
+                                    .mutate().path("${exchange.request.path}/user/${user.id}").build()
                             logger.debug("new path: ${modifiedRequest.path} ")
                             logger.debug("${exchange.request.path}")
                             chain.filter(exchange.mutate().request(modifiedRequest).build())
@@ -79,29 +82,40 @@ class ProjectGateway {
                         logger.debug("http: ${exchange.request.method} | predicate post routes of projectService: ${exchange.request.method == HttpMethod.POST}")
                         exchange.request.method == HttpMethod.POST
                     }
-                filters {
-                    modifyRequestBody(
-                        GatewayProjectDTO::class.java, ProjectDTO::class.java,
-                        MediaType.APPLICATION_JSON_VALUE
-                    ) { _, projectDTO -> Mono.just(ProjectDTO(projectDTO.name, user.id, projectDTO.members)) }
-                }
+                    .filters { f ->
+                        f.modifyRequestBody(
+                                GatewayProjectDTO::class.java, ProjectDTO::class.java,
+                                MediaType.APPLICATION_JSON_VALUE
+                        ) { _, projectDTO -> Mono.just(ProjectDTO(projectDTO.name, user.id, projectDTO.members)) }
+                    }
+                uri(ProjectEndpoint.SERVICE.url)
+            }
+
+            route {
+                // createMembers
+                path(
+                        "/${ProjectEndpoint.BASE.url}/*/members/user/*"
+                ).and()
+                        .predicate { exchange ->
+                            logger.debug("http: ${exchange.request.method} | predicate post routes of projectService: ${exchange.request.method == HttpMethod.POST}")
+                            exchange.request.method == HttpMethod.POST
+                        }
                 uri(ProjectEndpoint.SERVICE.url)
             }
 
             //@toDo~~~~~~~~~~~~ Not tested ~~~~~~~~~~~~~
-            
-            route {
-                path(
-                    "/${ProjectEndpoint.BASE.url}/{projectId}/members"
-                ).and()
-                    .predicate { exchange ->
-                        exchange.request.method == HttpMethod.GET
-                    }
-                    .filters { f ->
-                        f.filter(userIsMemberFilter.apply(userIsMemberFilter.customConfig(user)))
-                    }
-                uri(ProjectEndpoint.SERVICE.url)
-            }
+//            route {
+//                path(
+//                    "/${ProjectEndpoint.BASE.url}/{projectId}/members"
+//                ).and()
+//                    .predicate { exchange ->
+//                        exchange.request.method == HttpMethod.GET
+//                    }
+//                    .filters { f ->
+//                        f.filter(userIsMemberFilter.apply(userIsMemberFilter.customConfig(user)))
+//                    }
+//                uri(ProjectEndpoint.SERVICE.url)
+//            }
         }
     }
 }
