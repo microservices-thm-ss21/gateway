@@ -17,8 +17,10 @@ class JwtService(private val jwtProperties: JWTProperties) {
     private val key: Key = Keys.hmacShaKeyFor(jwtProperties.secret.toByteArray())
     private val logger = LoggerFactory.getLogger(this::class.java)
 
+    fun isolateBearerValue(authValue: String) = authValue.substring("Bearer ".length)
+
     fun authorize(serverWebExchange: ServerWebExchange): User {
-        return authorize(serverWebExchange.request.headers[HttpHeaders.AUTHORIZATION]!![0])
+        return authorize(isolateBearerValue(serverWebExchange.request.headers[HttpHeaders.AUTHORIZATION]!![0]))
     }
 
     fun authorize(jwt: String): User {
