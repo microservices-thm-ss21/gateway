@@ -22,7 +22,7 @@ class JwtService(private val jwtProperties: JWTProperties) {
     fun authorize(serverWebExchange: ServerWebExchange): User {
         return authorize(isolateBearerValue(serverWebExchange.request.headers[HttpHeaders.AUTHORIZATION]!![0]))
     }
-
+    // Notfalllösung: pro Route: @Header("Authorization") fullJwt: String
     fun authorize(jwt: String): User {
         val claims = Jwts.parserBuilder()
                     .setSigningKey(key)
