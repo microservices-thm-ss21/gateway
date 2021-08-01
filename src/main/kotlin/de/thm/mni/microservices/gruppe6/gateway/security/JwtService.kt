@@ -33,14 +33,4 @@ class JwtService(private val jwtProperties: JWTProperties) {
         return User(claims)
     }
 
-    fun createToken(user: User): String {
-        return Jwts.builder()
-            .setSubject(jwtProperties.jwtSubject)
-            .addClaims(user.getJwtClaims())
-            .setIssuedAt(Date())
-            .setExpiration(Date(System.currentTimeMillis() + (1000 * jwtProperties.expiration)))
-            .signWith(key)
-            .compact()
-    }
-
 }
