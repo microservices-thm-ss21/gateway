@@ -20,10 +20,8 @@ class AuthFilter(
 
         override fun apply(config: Config): GatewayFilter {
             return GatewayFilter { exchange: ServerWebExchange, chain: GatewayFilterChain ->
-                Mono.just(exchange).map {
-                    // TODO: uncomment when fixed
+                Mono.just(exchange).doOnNext {
                     jwtService.authorize(it)
-                    it
                 }.onErrorResume { exception ->
                     logger.debug("Exception on verifying JWT and obtaining userId", exception)
                     Mono.error(ServiceException(HttpStatus.UNAUTHORIZED, "You are not authorized."))

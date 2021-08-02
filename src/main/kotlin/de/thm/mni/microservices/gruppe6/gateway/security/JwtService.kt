@@ -8,11 +8,10 @@ import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import java.security.Key
-import java.util.*
 
 
 @Component
-class JwtService(private val jwtProperties: JWTProperties) {
+class JwtService(private val jwtProperties: JwtProperties) {
 
     private val key: Key = Keys.hmacShaKeyFor(jwtProperties.secret.toByteArray())
     private val logger = LoggerFactory.getLogger(this::class.java)
@@ -22,7 +21,7 @@ class JwtService(private val jwtProperties: JWTProperties) {
     fun authorize(serverWebExchange: ServerWebExchange): User {
         return authorize(isolateBearerValue(serverWebExchange.request.headers[HttpHeaders.AUTHORIZATION]!![0]))
     }
-    // Notfalllösung: pro Route: @Header("Authorization") fullJwt: String
+
     fun authorize(jwt: String): User {
         val claims = Jwts.parserBuilder()
                     .setSigningKey(key)
