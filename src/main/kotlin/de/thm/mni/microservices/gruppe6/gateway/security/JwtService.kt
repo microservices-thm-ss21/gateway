@@ -10,18 +10,32 @@ import org.springframework.web.server.ServerWebExchange
 import java.security.Key
 
 
+/**
+ * Implements a Service which handles all functionality needed for the jwt.
+ */
 @Component
 class JwtService(private val jwtProperties: JwtProperties) {
 
     private val key: Key = Keys.hmacShaKeyFor(jwtProperties.secret.toByteArray())
-    private val logger = LoggerFactory.getLogger(this::class.java)
 
+    /**
+     * Removes the "Bearer " part from the token
+     */
     fun isolateBearerValue(authValue: String) = authValue.substring("Bearer ".length)
 
+    /**
+     * Implements a way to use a ServerWebExchange for authorization.
+     * The WebExchange needs to have the section "Authorization" with the jwt as the value.
+     * @param serverWebExchange
+     */
     fun authorize(serverWebExchange: ServerWebExchange): User {
         return authorize(isolateBearerValue(serverWebExchange.request.headers[HttpHeaders.AUTHORIZATION]!![0]))
     }
 
+    /**
+     * Authorizes a user with a jwt
+     * @param jwt
+     */
     fun authorize(jwt: String): User {
         val claims = Jwts.parserBuilder()
                     .setSigningKey(key)

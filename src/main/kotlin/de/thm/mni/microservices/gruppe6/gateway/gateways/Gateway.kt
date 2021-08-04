@@ -11,9 +11,15 @@ import org.springframework.cloud.gateway.route.builder.routes
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
+/**
+ * Implementation of the gateway.
+ */
 @Configuration
 class Gateway(private val authFilter: AuthFilter) {
 
+    /**
+     * Builds all the routes that can go through the gateway.
+     */
     @Bean
     fun routeLocator(builder: RouteLocatorBuilder): RouteLocator {
         return builder.routes {

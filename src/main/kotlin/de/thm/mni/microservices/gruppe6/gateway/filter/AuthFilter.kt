@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 
+/**
+ * Implements an authorization filter to check the incoming jwt.
+ */
 @Component
 class AuthFilter(
     private val jwtService: JwtService
