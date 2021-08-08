@@ -3,7 +3,8 @@
 Service initially retrieving all requests from users and forwarding them to the respective services.
 
 == Structure
-A user is required to be logged in to send any requests except for /login, which is forwarded to the user-services login-route. This is ensured via a GatewayFilter.
+* A user is required to be logged in to send any requests except for /login, which is forwarded to the user-services login-route. This is ensured via a GatewayFilter.
+* Every other route is protected via an authentication filter. Therefore, authentication is optional for any other service.
 
 == Tech-Stack
 The gateway uses the Spring Cloud Gateway framework to forward requests to their respective services.
